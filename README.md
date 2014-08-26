@@ -2,7 +2,9 @@ Vaadin + Spring = AWESOME
 =========================
 
 This add-on adds support for Vaadin to Spring and Spring Boot, or Spring support to Vaadin,
-depending on your point of view ;-).
+depending on your point of view ;-). 
+
+This project is not yet an official Vaadin Spring add-on, but a Vaadin R&D prototype that I work on whenever I have time. I'm also using the add-on in several customer projects to make sure it meets the requirements of a real-world project.
 
 ## Quick start ##
 
@@ -114,27 +116,11 @@ Please see the JavaDocs and the sample application for more information.
 
 ## The Event Bus ##
 
-This add-on provides its own event bus framework, with the intention of complementing Spring's own event publisher.
-The JavaDocs of the ```org.vaadin.spring.events.EventBus``` interface should be enough to get you started, but here is a
-summary of the key features:
-
-1. Event buses can be scoped to the current UI, the current session or the entire application.
-2. Event buses are chained in such a way that application events are propagated to the session event bus and the UI
-event bus, and session events are propagated to the UI event bus.
-3. Events published by Spring's event publisher are automatically propagated to the application event bus.
-4. You can use qualifiers to decide which of the event buses to inject. If no qualifiers are present, the UI event bus
-is injected.
-5. You can use the UI event bus to both publish and subscribe to events of any scope.
-6. You need to explicitly subscribe to and unsubscribe from an event bus.
+The event bus has its own README, you can find it [here](spring-vaadin/src/main/java/org/vaadin/spring/events/README.md).
 
 ## Internationalization ##
 
-This add-on provides some helper classes to make it easier to use Spring's ```MessageSource```s in Vaadin applications.
-The most stable one, that you can use in your applications already, is the ```org.vaadin.spring.i18n.I18N``` class.
-Please read the JavaDocs for more information.
-
-There are also some other I18N classes, but they are still very experimental so I won't write about them here just yet.
-;-)
+The internationalization support has its own README, you can find it [here](spring-vaadin/src/main/java/org/vaadin/spring/i18n/README.md).
 
 ## TouchKit Support ##
 
@@ -156,13 +142,15 @@ If you want to customize the TouchKit servlet, extend
 
 Finally, please note that TouchKit is a commercial Vaadin product. It can, however, also be used in AGPL projects.
 
-## The Stuff Module ##
+## Stuff ##
 
-The Stuff module contains different classes and utilities that I often end up re-implementing in my projects. Do not
-use any of them in production until the supported features are listed in this README.
+The stuff module has its own README, you can find it [here](spring-vaadin-stuff/README.md).
 
 ## Security Support ##
 
 The Spring Security integration is still in very early stages of development. Do not assume it will work, and don't use
 it in your projects until the supported features are listed in this README.
 
+## Testing
+
+The testing module has its own REAMDE, you can find it [here](spring-vaadin-test/README.md).

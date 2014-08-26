@@ -21,27 +21,27 @@ package org.vaadin.spring.events;
  * <li>Events propagate from parent buses to children</li>
  * <li>Events are scoped</li>
  * </ul>
- * <p/>
+ * <p>
  * There are three event scopes, and therefore three event bus types:
  * <ol>
  * <li>{@link EventScope#APPLICATION} events are published to the entire application.</li>
  * <li>{@link EventScope#SESSION} events are published to the current session.</li>
  * <li>{@link EventScope#UI} events are published to the current UI.</li>
  * </ol>
- * <p/>
+ * <p>
  * The event buses are chained in the following way:
  * <ul>
  * <li>Application events are propagated to the session event bus.</li>
  * <li>Session events are propagated to the UI event bus.</li>
  * </ul>
  * Furthermore, {@link org.springframework.context.ApplicationEventPublisher} events are propagated to the application event bus (and further down the chain to the UI event bus).
- * <p/>
+ * <p>
  * The primary {@code EventBus} implementation is always UI-scoped and can be injected into your UI classes like this:
  * <code>
  * &#64;Autowired EventBus myUIScopedEventBus;
  * </code>
  * With this implementation, you can subscribe to and publish events of all scopes (see {@link #publish(EventScope, Object, Object)}).
- * <p/>
+ * <p>
  * However, if you want to inject any of the other
  * event buses, you have to use the {@link org.vaadin.spring.events.EventBusScope} qualifier. For example, the following code will inject the session event bus:
  * <code>
@@ -106,9 +106,9 @@ public interface EventBus {
 
     /**
      * Subscribes the specified listener to the event bus. The listener need not implement the {@link org.vaadin.spring.events.EventBusListener} interface,
-     * but must contain one or more methods that are annotated with the {@link org.vaadin.spring.events.EventBusListenerMethod} interface and conforms to this method
-     * signature: <code>myMethodName(Event&lt;MyPayloadType&gt;)</code>. The event bus will analyse the payload type of the listener methods to determine
-     * which events the different methods are interested in receiving. This is the same as calling {@link #subscribe(Object, boolean) subscribe(listener, true}.
+     * but must contain one or more methods that are annotated with the {@link org.vaadin.spring.events.EventBusListenerMethod} interface and conform to one of these method
+     * signatures: <code>myMethodName(Event&lt;MyPayloadType&gt;)</code> or <code>myMethodName(MyPayloadType)</code>. The event bus will analyse the payload type of the listener methods to determine
+     * which events the different methods are interested in receiving. This is the same as calling {@link #subscribe(Object, boolean) subscribe(listener, true)}.
      *
      * @param listener the listener to subscribe, never {@code null}.
      */
@@ -116,8 +116,8 @@ public interface EventBus {
 
     /**
      * Subscribes the specified listener to the event bus. The listener need not implement the {@link org.vaadin.spring.events.EventBusListener} interface,
-     * but must contain one or more methods that are annotated with the {@link org.vaadin.spring.events.EventBusListenerMethod} interface and conforms to this method
-     * signature: <code>myMethodName(Event&lt;MyPayloadType&gt;)</code>. The event bus will analyse the payload type of the listener methods to determine
+     * but must contain one or more methods that are annotated with the {@link org.vaadin.spring.events.EventBusListenerMethod} interface and conform to one of these method
+     * signatures: <code>myMethodName(Event&lt;MyPayloadType&gt;)</code> or <code>myMethodName(MyPayloadType)</code>. The event bus will analyse the payload type of the listener methods to determine
      * which events the different methods are interested in receiving.
      *
      * @param listener                   the listener to subscribe, never {@code null}.

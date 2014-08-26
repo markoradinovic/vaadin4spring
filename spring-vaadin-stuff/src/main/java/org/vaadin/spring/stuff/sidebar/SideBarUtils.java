@@ -17,6 +17,8 @@ package org.vaadin.spring.stuff.sidebar;
 
 import com.vaadin.navigator.View;
 import com.vaadin.ui.UI;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.vaadin.spring.i18n.I18N;
 import org.vaadin.spring.navigator.VaadinView;
@@ -27,11 +29,14 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * TODO Document me!
+ * Utility methods for working with side bars. This class is a Spring managed bean and is mainly
+ * intended for internal use.
  *
- * @author petter@vaadin.com
+ * @author Petter Holmström (petter@vaadin.com)
  */
 public class SideBarUtils {
+
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final ApplicationContext applicationContext;
 
@@ -51,39 +56,48 @@ public class SideBarUtils {
     }
 
     private void scanForSections() {
+        logger.debug("Scanning for side bar sections");
         String[] beanNames = applicationContext.getBeanNamesForAnnotation(SideBarSection.class);
         for (String beanName : beanNames) {
-            addSectionDescriptors(applicationContext.getType(beanName).getAnnotation(SideBarSection.class));
+            logger.debug("Bean [{}] declares a side bar section", beanName);
+            addSectionDescriptors(applicationContext.findAnnotationOnBean(beanName, SideBarSection.class));
         }
         beanNames = applicationContext.getBeanNamesForAnnotation(SideBarSections.class);
         for (String beanName : beanNames) {
-            addSectionDescriptors(applicationContext.getType(beanName).getAnnotation(SideBarSections.class).value());
+            logger.debug("Bean [{}] declares multiple side bar sections", beanName);
+            addSectionDescriptors(applicationContext.findAnnotationOnBean(beanName, SideBarSections.class).value());
         }
     }
 
     private void addSectionDescriptors(SideBarSection... sections) {
         for (SideBarSection section : sections) {
+            logger.debug("Adding side bar section [{}]", section.id());
             this.sections.add(new SideBarSectionDescriptor(section, i18n));
         }
     }
 
     private void scanForItems() {
+        logger.debug("Scanning for side bar items");
         String[] beanNames = applicationContext.getBeanNamesForAnnotation(SideBarItem.class);
         for (String beanName : beanNames) {
+            logger.debug("Bean [{}] declares a side bar item", beanName);
             Class<?> beanType = applicationContext.getType(beanName);
-            SideBarItem item = beanType.getAnnotation(SideBarItem.class);
             if (Runnable.class.isAssignableFrom(beanType)) {
-                this.items.add(new SideBarItemDescriptor.ActionItemDescriptor(item, i18n, beanName, applicationContext));
+                logger.debug("Adding side bar item for action [{}]", beanType);
+                this.items.add(new SideBarItemDescriptor.ActionItemDescriptor(beanName, applicationContext));
             } else if (View.class.isAssignableFrom(beanType) && beanType.isAnnotationPresent(VaadinView.class)) {
-                VaadinView vaadinView = beanType.getAnnotation(VaadinView.class);
-                this.items.add(new SideBarItemDescriptor.ViewItemDescriptor(item, i18n, vaadinView));
+                logger.debug("Adding side bar item for view [{}]", beanType);
+                this.items.add(new SideBarItemDescriptor.ViewItemDescriptor(beanName, applicationContext));
             }
         }
     }
 
     /**
-     * @param uiClass
-     * @return
+     * Gets all side bar sections for the specified UI class.
+     *
+     * @param uiClass the UI class, must not be {@code null}.
+     * @return a collection of side bar section descriptors, never {@code null}.
+     * @see SideBarSection#ui()
      */
     public Collection<SideBarSectionDescriptor> getSideBarSections(Class<? extends UI> uiClass) {
         List<SideBarSectionDescriptor> supportedSections = new ArrayList<>();
@@ -96,8 +110,10 @@ public class SideBarUtils {
     }
 
     /**
-     * @param descriptor
-     * @return
+     * Gets all side bar items for the specified side bar section.
+     *
+     * @param descriptor descriptor the side bar section descriptor, must not be {@code null}.
+     * @return a collection of side bar item descriptors, never {@code null}.
      */
     public Collection<SideBarItemDescriptor> getSideBarItems(SideBarSectionDescriptor descriptor) {
         List<SideBarItemDescriptor> supportedItems = new ArrayList<>();
